@@ -6,18 +6,22 @@ Las direcciones usan dominios reservados para ejemplos y no son cuentas reales.
 import secrets
 import string
 import tkinter as tk
+import random
+import string
 from tkinter import filedialog, messagebox, ttk
 
 
 # Dominios reservados para documentación y pruebas: no entregan correo.
 PROVEEDORES = {
-    "Gmail (prueba)": "gmail.example",
-    "Hotmail (prueba)": "hotmail.example",
-    "Outlook (prueba)": "outlook.example",
-    "Yahoo (prueba)": "yahoo.example",
-    "iCloud (prueba)": "icloud.example",
-    "Proton Mail (prueba)": "proton.example",
-    "Otro dominio de prueba": "correo.example",
+    "Gmail ": "gmail.com",
+    "Hotmail ": "hotmail.com",
+    "Hotmail es": "hotmail.es",
+    "Outlook ": "outlook.com",
+    "Outlook es": "outlook.es",
+    "Yahoo ": "yahoo.com",
+    "iCloud ": "icloud.com",
+    "Proton Mail ": "proton.com",
+    "Otro dominio de prueba": "correo.com",
 }
 
 
@@ -27,6 +31,11 @@ def generar_password():
     caracteres = string.ascii_letters + string.digits
     return "".join(secrets.choice(caracteres) for _ in range(longitud))
 
+def generdor_usuario(dominio:str):
+    longitud = random.randint(5, 10)
+    usuario = "".join(random.choices(string.ascii_lowercase, k=longitud))
+    numero = random.randint(10, 999)
+    return f"{usuario}{numero}{dominio}"
 
 def generar():
     proveedor = proveedor_var.get()
@@ -42,12 +51,12 @@ def generar():
     lineas = []
     passwords = set()
     for _ in range(cantidad):
-        usuario = "usuario" + secrets.token_hex(5)
+        usuario = generdor_usuario(dominio)
         password = generar_password()
         while password in passwords:
             password = generar_password()
         passwords.add(password)
-        lineas.append(f"{usuario}@{dominio}:{password}")
+        lineas.append(f"{usuario}:{password}")
 
     ruta = filedialog.asksaveasfilename(
         title="Guardar datos de prueba",
@@ -78,7 +87,7 @@ marco = ttk.Frame(ventana, padding=18)
 marco.grid()
 
 ttk.Label(marco, text="Proveedor de correo de prueba:").grid(row=0, column=0, sticky="w", pady=(0, 5))
-proveedor_var = tk.StringVar(value="Gmail (prueba)")
+proveedor_var = tk.StringVar(value="Gmail")
 ttk.Combobox(
     marco,
     textvariable=proveedor_var,
@@ -100,3 +109,5 @@ ttk.Label(
 ttk.Button(marco, text="Generar y guardar .txt", command=generar).grid(row=5, column=0, sticky="ew")
 
 ventana.mainloop()
+
+
